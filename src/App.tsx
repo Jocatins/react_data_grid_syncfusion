@@ -11,24 +11,19 @@ import {
   ToolbarItems,
 } from "@syncfusion/ej2-react-grids";
 import { MaskedTextBoxComponent } from "@syncfusion/ej2-react-inputs";
-import data from "./dataSource.json";
 
 import "./App.css";
+
+import { DataManager, UrlAdaptor } from "@syncfusion/ej2-data";
 
 function App() {
   const editOptions: EditSettingsModel = {
     allowEditing: true,
     allowAdding: true,
     allowDeleting: true,
-    mode: "Batch",
+    mode: "Dialog",
   };
-  const toolbarOptions: ToolbarItems[] = [
-    "Add",
-    "Edit",
-    "Delete",
-    "Update",
-    "Cancel",
-  ];
+  const toolbarOptions: ToolbarItems[] = ["Add", "Edit", "Delete"];
   function editTemplate(args: any) {
     return (
       <MaskedTextBoxComponent
@@ -38,12 +33,21 @@ function App() {
       />
     );
   }
+
+  const baseUrl: string = "http://localhost:7500";
+  const data: DataManager = new DataManager({
+    adaptor: new UrlAdaptor(),
+    insertUrl: baseUrl + "/orders/insert",
+    removeUrl: baseUrl + "/orders/delete",
+    updateUrl: baseUrl + "/orders/update",
+    url: baseUrl + "/orders",
+  });
   return (
     <div className="App" style={{ margin: "10%", marginTop: "5%" }}>
       <GridComponent
         dataSource={data}
         allowPaging={true}
-        pageSettings={{ pageSize: 10 }}
+        pageSettings={{ pageSize: 5 }}
         allowFiltering={true}
         allowGrouping={true}
         editSettings={editOptions}
@@ -60,7 +64,6 @@ function App() {
             field="CustomerID"
             headerText="Customer ID"
             width="150"
-            editType="dropdownedit"
           />
           <ColumnDirective
             field="OrderDate"
