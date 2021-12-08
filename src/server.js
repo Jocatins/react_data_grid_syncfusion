@@ -7,24 +7,23 @@ var cors = require("cors");
 app.use(cors());
 app.use(bodyParser.json());
 
-//all record
-app.post("/orders", function (req, res) {
+//get
+app.get("/api/orders", function (req, res) {
   return res.json({ result: data, count: data.length });
 });
-//insert
-app.post("/orders/insert", function (req, res) {
+//create
+app.post("/api/orders", function (req, res) {
   data.splice(0, 0, req.body.value);
-  return res.status(200).send("Row inserted");
-});
-//remove
-app.post("/orders/delete", function (req, res) {
-  data = data.filter((x) => x.OrderID != req.body.key);
-  return res.status(200).send("Row Deleted");
+  return res.status(200).send("Row inserted successfully");
 });
 //update
-app.post("/orders/update", function (req, res) {
-  var index = data.findIndex((x) => x.OrderID === req.body.value.OrderID);
-  data.splice(index, 1, req.body.value);
-  return res.status(200).send("Row Updated");
+app.put("/api/orders/:id", function (req, res) {
+  data = data.splice(0, 0, req.body.value);
+  return res.status(200).send("Row updated successfully!!");
+});
+//delete
+app.delete("/api/orders/:id", function (req, res) {
+  data = data.filter((x) => x.OrderID != req.params.id);
+  return res.status(200).send("Row Deleted successfully...");
 });
 app.listen(7500);

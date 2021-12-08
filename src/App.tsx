@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   GridComponent,
   ColumnDirective,
@@ -11,10 +11,13 @@ import {
   ToolbarItems,
 } from "@syncfusion/ej2-react-grids";
 import { MaskedTextBoxComponent } from "@syncfusion/ej2-react-inputs";
-
+import {
+  createOrder,
+  deleteOrder,
+  getOrders,
+  updateOrder,
+} from "./orderService";
 import "./App.css";
-
-import { DataManager, UrlAdaptor } from "@syncfusion/ej2-data";
 
 function App() {
   const editOptions: EditSettingsModel = {
@@ -34,14 +37,24 @@ function App() {
     );
   }
 
-  const baseUrl: string = "http://localhost:7500";
-  const data: DataManager = new DataManager({
-    adaptor: new UrlAdaptor(),
-    insertUrl: baseUrl + "/orders/insert",
-    removeUrl: baseUrl + "/orders/delete",
-    updateUrl: baseUrl + "/orders/update",
-    url: baseUrl + "/orders",
+  const [data, setData] = useState();
+
+  useEffect(() => {
+    getOrders().then((data) => {
+      setData(data);
+    });
   });
+  function dataSourceChanged(state: any) {
+    if (state.action === "add") {
+      createOrder(state.data);
+    } else if (state.action === "edit") {
+      updateOrder(state.data);
+    } else if (state.requestType === "delete") {
+      console.log(state.data);
+      deleteOrder(state.data[0].OrderID);
+    }
+  }
+
   return (
     <div className="App" style={{ margin: "10%", marginTop: "5%" }}>
       <GridComponent
@@ -52,6 +65,7 @@ function App() {
         allowGrouping={true}
         editSettings={editOptions}
         toolbar={toolbarOptions}
+        dataSourceChanged={dataSourceChanged}
       >
         <ColumnsDirective>
           <ColumnDirective
