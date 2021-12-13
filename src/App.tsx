@@ -6,6 +6,11 @@ import {
   Inject,
   Filter,
   Grid,
+  Aggregate,
+  AggregateDirective,
+  AggregatesDirective,
+  AggregateColumnsDirective,
+  AggregateColumnDirective,
 } from "@syncfusion/ej2-react-grids";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import "./App.css";
@@ -80,7 +85,29 @@ function App() {
             editType="numericedit"
           />
         </ColumnsDirective>
-        <Inject services={[Filter]} />
+        <AggregatesDirective>
+          <AggregateDirective>
+            <AggregateColumnsDirective>
+              <AggregateColumnDirective
+                field="Freight"
+                type="Sum"
+                footerTemplate={(props: any) => <span>Sum: {props.Sum}</span>}
+              />
+            </AggregateColumnsDirective>
+          </AggregateDirective>
+          <AggregateDirective>
+            <AggregateColumnsDirective>
+              <AggregateColumnDirective
+                field="Freight"
+                type="Max"
+                footerTemplate={(props: any) => (
+                  <span>Maximum: {props.Max}</span>
+                )}
+              />
+            </AggregateColumnsDirective>
+          </AggregateDirective>
+        </AggregatesDirective>
+        <Inject services={[Filter, Aggregate]} />
       </GridComponent>
     </div>
   );
