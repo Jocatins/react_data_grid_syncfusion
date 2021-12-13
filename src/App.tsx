@@ -5,26 +5,29 @@ import {
   ColumnsDirective,
   Inject,
   Filter,
-  FilterSettingsModel,
+  Grid,
 } from "@syncfusion/ej2-react-grids";
-
+import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import "./App.css";
 import data from "./dataSource.json";
+import { DataUtil } from "@syncfusion/ej2-data";
 
 function App() {
-  const filterOptions: FilterSettingsModel = {
-    ignoreAccent: true,
-    type: "Menu",
-    // type: "Checkbox",
-    //type: "Excel"
-  };
+  const shipNames = DataUtil.distinct(data, "ShipName") as string[];
+  function filterTemplate(props: any) {
+    return <DropDownListComponent dataSource={shipNames} change={onChange} />;
+  }
+  let grid: Grid | null = null;
+  function onChange(args: any) {
+    grid && grid.filterByColumn("ShipName", "equal", args.value);
+  }
 
   return (
     <div className="App" style={{ margin: "10%", marginTop: "5%" }}>
       <GridComponent
         dataSource={data}
         allowFiltering={true}
-        filterSettings={filterOptions}
+        ref={(g) => (grid = g)}
       >
         <ColumnsDirective>
           <ColumnDirective
@@ -37,7 +40,6 @@ function App() {
             field="CustomerID"
             headerText="Customer ID"
             width="150"
-            filter={{ type: "Excel" }}
           />
           <ColumnDirective
             field="OrderDate"
@@ -58,6 +60,7 @@ function App() {
             field="ShipName"
             headerText="Ship Name "
             width="100"
+            filterTemplate={filterTemplate}
           />
           <ColumnDirective
             field="ShipAddress"

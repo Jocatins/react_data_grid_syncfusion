@@ -49,3 +49,4 @@ npm install @syncfusion/ej2-react-grids --save
 npm i @syncfusion/ej2-react-inputs --save
 npm i @syncfusion/ej2-data
 npm install express
+npm i @syncfusion/ej2-react-dropdowns
