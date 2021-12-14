@@ -4,35 +4,94 @@ import {
   ColumnDirective,
   ColumnsDirective,
   Inject,
-  Filter,
+  Page,
+  Toolbar,
+  PdfExport,
+  ExcelExport,
   Grid,
-  Aggregate,
-  AggregateDirective,
-  AggregatesDirective,
-  AggregateColumnsDirective,
-  AggregateColumnDirective,
 } from "@syncfusion/ej2-react-grids";
-import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import "./App.css";
 import data from "./dataSource.json";
-import { DataUtil } from "@syncfusion/ej2-data";
 
 function App() {
-  const shipNames = DataUtil.distinct(data, "ShipName") as string[];
-  function filterTemplate(props: any) {
-    return <DropDownListComponent dataSource={shipNames} change={onChange} />;
-  }
-  let grid: Grid | null = null;
-  function onChange(args: any) {
-    grid && grid.filterByColumn("ShipName", "equal", args.value);
-  }
-
+  let grid: Grid | null;
+  const toolbarClick = (args: any) => {
+    if (grid) {
+      if (args.item.id.includes("pdfexport")) {
+        grid.pdfExport({
+          fileName: "titan_sync.pdf",
+          exportType: "CurrentPage",
+          theme: {
+            header: {
+              bold: true,
+              fontColor: "#00ff00",
+              fontName: "Georgia",
+              fontSize: 12,
+            },
+            record: { fontColor: "#0000ff", fontName: "Georgia", fontSize: 8 },
+          },
+          header: {
+            fromTop: 0,
+            height: 120,
+            contents: [
+              {
+                type: "Text",
+                value: "Islanders",
+                position: { x: 0, y: 50 },
+                style: { textBrushColor: "#111111", fontSize: 12 },
+              },
+            ],
+          },
+          footer: {
+            contents: [
+              {
+                type: "Text",
+                value: "Have a great day",
+                position: { x: 0, y: 50 },
+                style: { textBrushColor: "#000000", fontSize: 12 },
+              },
+            ],
+            fromBottom: 130,
+            height: 120,
+          },
+        });
+      } else if (args.item.id.includes("excelexport")) {
+        grid.excelExport({
+          fileName: "sphinx.xlsx",
+          exportType: "CurrentPage",
+          header: {
+            headerRows: 2,
+            rows: [
+              {
+                cells: [
+                  {
+                    colSpan: 4,
+                    value: "Titans Exploit",
+                    style: {
+                      fontColor: "#C67878",
+                      fontSize: 12,
+                      hAlign: "Center",
+                      bold: true,
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        });
+      }
+    }
+  };
   return (
     <div className="App" style={{ margin: "10%", marginTop: "5%" }}>
       <GridComponent
         dataSource={data}
-        allowFiltering={true}
-        ref={(g) => (grid = g)}
+        ref={(grids) => (grid = grids)}
+        allowPaging={true}
+        toolbar={["PdfExport", "ExcelExport"]}
+        allowPdfExport={true}
+        allowExcelExport
+        toolbarClick={toolbarClick}
       >
         <ColumnsDirective>
           <ColumnDirective
@@ -40,6 +99,7 @@ function App() {
             headerText="Invoice ID"
             textAlign="Left"
             width="100"
+            isPrimaryKey={true}
           />
           <ColumnDirective
             field="CustomerID"
@@ -65,7 +125,6 @@ function App() {
             field="ShipName"
             headerText="Ship Name "
             width="100"
-            filterTemplate={filterTemplate}
           />
           <ColumnDirective
             field="ShipAddress"
@@ -85,29 +144,8 @@ function App() {
             editType="numericedit"
           />
         </ColumnsDirective>
-        <AggregatesDirective>
-          <AggregateDirective>
-            <AggregateColumnsDirective>
-              <AggregateColumnDirective
-                field="Freight"
-                type="Sum"
-                footerTemplate={(props: any) => <span>Sum: {props.Sum}</span>}
-              />
-            </AggregateColumnsDirective>
-          </AggregateDirective>
-          <AggregateDirective>
-            <AggregateColumnsDirective>
-              <AggregateColumnDirective
-                field="Freight"
-                type="Max"
-                footerTemplate={(props: any) => (
-                  <span>Maximum: {props.Max}</span>
-                )}
-              />
-            </AggregateColumnsDirective>
-          </AggregateDirective>
-        </AggregatesDirective>
-        <Inject services={[Filter, Aggregate]} />
+
+        <Inject services={[Page, Toolbar, PdfExport, ExcelExport]} />
       </GridComponent>
     </div>
   );
