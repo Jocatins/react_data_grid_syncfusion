@@ -5,18 +5,31 @@ import {
   ColumnsDirective,
   Inject,
   Page,
-  SelectionSettingsModel,
+  Column,
 } from "@syncfusion/ej2-react-grids";
 import "./App.css";
 import data from "./dataSource.json";
+import { getValue } from "@syncfusion/ej2-base";
 
 function App() {
-  const selectionOptions: SelectionSettingsModel = {
-    // type: "Multiple",
-    // mode: "Cell",
-    // cellSelectionMode: "Box",
-    checkboxMode: "ResetOnRowClick",
-    enableToggle: true,
+  const queryCellInfo = (args: any) => {
+    if (args.data.OrderID === 10252 && args.column.field === "CustomerID") {
+      args.rowSpan = 2;
+    }
+    if ((args.column as Column).field === "Freight" && args.data && args.cell) {
+      if (getValue("Freight", args.data) > 100) {
+        args.cell.classList.add("above-100");
+      } else if (getValue("Freight", args.data) > 75) {
+        args.cell.classList.add("above-75");
+      } else if (getValue("Freight", args.data) > 50) {
+        args.cell.classList.add("above-50");
+      }
+    }
+  };
+  const rowDataBound = (args: any) => {
+    if (args.data.Freight > 50) {
+      args.row.classList.add("above-50");
+    }
   };
 
   return (
@@ -24,8 +37,8 @@ function App() {
       <GridComponent
         dataSource={data}
         allowPaging={true}
-        selectionSettings={selectionOptions}
-        selectedRowIndex={5}
+        queryCellInfo={queryCellInfo}
+        //rowDataBound={rowDataBound}
       >
         <ColumnsDirective>
           <ColumnDirective type="checkbox" width="50" />

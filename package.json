@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@syncfusion/ej2-base": "^19.3.57",
     "@syncfusion/ej2-data": "^19.3.56",
     "@syncfusion/ej2-react-dropdowns": "^19.3.56",
     "@syncfusion/ej2-react-grids": "^19.3.53",

@@ -7,3 +7,13 @@
 @import "../node_modules/@syncfusion/ej2-popups/styles/material.css";
 @import "../node_modules/@syncfusion/ej2-splitbuttons/styles/material.css";
 @import "../node_modules/@syncfusion/ej2-react-grids/styles/material.css";
+
+.above-50 {
+  background-color: aqua;
+}
+.above-75 {
+  background-color: rgb(255, 127, 212);
+}
+.above-100 {
+  background-color: brown;
+}
